@@ -10,27 +10,27 @@ main() {
 repo_setup() {
     local REPO=https://github.com/creativecraving-on-youtube/dotfiles
     local BARE="dotfiles.git"
-    mkdir -p dotfiles
+    mkdir 1>&2 -p dotfiles
     cd dotfiles
 
     [[ -e "$BARE" ]] || {
-        echo "Setting up dotfiles in \"$PWD\""
-        git clone --bare "$REPO" "$BARE"
+        echo >&2 "Setting up dotfiles in \"$PWD\""
+        git 1>&2 clone --bare "$REPO" "$BARE"
     }
 
     local env_name
     if [[ $# -gt 0 ]] then
         env_name="$1"; shift
     else
-        GIT_DIR="$BARE" git branch | grep "env/"
+        GIT_DIR="$BARE" git 1>&2 branch | grep "env/"
         read -p "Select a branch> env/" env_name
     fi
     local env="env/${env_name}"
 
 
     [[ -e "$env" ]] || {
-        echo "Checking out \"$env\""
-        GIT_DIR="$BARE" git worktree add "./$env_name" "$env"
+        echo >&2 "Checking out \"$env\""
+        GIT_DIR="$BARE" git 1>&2 worktree add "./$env_name" "$env"
     }
     echo "$env_name"
 }
