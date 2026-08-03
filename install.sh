@@ -19,7 +19,7 @@ repo_setup() {
     }
 
     local env_name
-    if $# -gt 0 then
+    if [[ $# -gt 0 ]] then
         env_name="$1"; shift
     else
         GIT_DIR="$BARE" git branch | grep "env/"
@@ -90,10 +90,10 @@ EOF
 
 file_type_str() {
     local filename="$1"; shift
-    [[ -e "$filename" ]] || { echo "non-existent"; return }
-    [[ -f "$filename" ]] && { echo "file"; return }
-    [[ -d "$filename" ]] && { echo "directory"; return }
-    [[ -L "$filename" ]] && { echo "link"; return }
+    [[ -e "$filename" ]] || { echo "non-existent"; return; }
+    [[ -f "$filename" ]] && { echo "file"; return; }
+    [[ -d "$filename" ]] && { echo "directory"; return; }
+    [[ -L "$filename" ]] && { echo "link"; return; }
     echo "other"
 }
 
