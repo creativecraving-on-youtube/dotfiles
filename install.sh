@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -eo pipefail
 TARGET="${TARGET:-$HOME}"
+REPO_DIR="$PWD/dotfiles"
 
 main() {
     local env_name="$(repo_setup "$@")"
@@ -10,8 +11,8 @@ main() {
 repo_setup() {
     local REPO=https://github.com/creativecraving-on-youtube/dotfiles
     local BARE="dotfiles.git"
-    mkdir 1>&2 -p dotfiles
-    cd dotfiles
+    mkdir 1>&2 -p "$REPO_DIR"
+    cd "$REPO_DIR"
 
     [[ -e "$BARE" ]] || {
         echo >&2 "Setting up dotfiles in \"$PWD\""
@@ -39,7 +40,7 @@ install() {
     local env_name="$1"; shift
     local env="env/$env_name"
 
-    cd "$env_name"
+    cd "$REPO_DIR/$env_name"
 
     # TODO: Use -print0 & friends once we work out the algorithm
 
