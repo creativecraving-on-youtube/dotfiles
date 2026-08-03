@@ -30,7 +30,7 @@ repo_setup() {
 
     [[ -e "$env" ]] || {
         echo "Checking out \"$env\""
-        GIT_DIR="$BARE" git worktree "./$env_name" "$env"
+        GIT_DIR="$BARE" git worktree add "./$env_name" "$env"
     }
     echo "$env_name"
 }
