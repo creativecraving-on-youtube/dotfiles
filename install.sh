@@ -28,7 +28,6 @@ repo_setup() {
     fi
     local env="env/${env_name}"
 
-
     [[ -e "$env_name" ]] || {
         echo >&2 "Checking out \"$env\""
         GIT_DIR="$BARE" git 1>&2 worktree add "./$env_name" "$env"
@@ -44,7 +43,7 @@ install() {
 
     # TODO: Use -print0 & friends once we work out the algorithm
 
-    while find files -mindepth 1 -print0 | read -d $'\0' source; do
+    find files -mindepth 1 -print0 | while read -d $'\0' source; do
         [[ "$source" == "files/dot" ]] && continue
 
         target="$TARGET/.${source#files/dot/}"
