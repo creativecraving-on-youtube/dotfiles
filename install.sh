@@ -23,7 +23,7 @@ repo_setup() {
     if [[ $# -gt 0 ]] then
         env_name="$1"; shift
     else
-        GIT_DIR="$BARE" git 1>&2 branch | grep "env/"
+        GIT_DIR="$BARE" git branch | grep 1>&2 "env/"
         read -p "Select a branch> env/" env_name
     fi
     local env="env/${env_name}"
