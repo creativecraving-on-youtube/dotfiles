@@ -45,6 +45,8 @@ install() {
     # TODO: Use -print0 & friends once we work out the algorithm
 
     while find files -mindepth 1 -print0 | read -d $'\0' source; do
+        [[ "$source" == "files/dot" ]] && continue
+
         target="$TARGET/.${source#files/dot/}"
         # Source and target are both directories; link over source contents instead
         [[ -d "$target" && -d "$source" ]] && continue
