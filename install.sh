@@ -53,7 +53,7 @@ install() {
         # Simple case: File is missing, or a link
         [[ ! -e "$target" || -L "$target" ]] && {
             echo "Installing \"$(basename "$source")\" to \"$target\""
-            ln -svT "$source" "$target"
+            ln -svT "$PWD/$source" "$target"
             continue
         }
 
