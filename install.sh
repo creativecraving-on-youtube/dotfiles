@@ -51,7 +51,8 @@ install() {
         [[ -d "$target" && -d "$source" ]] && continue
 
         # Simple case: File is missing, or a link
-        [[ ! -e "$target" || -L "$target" ]] && {
+	[[ -L "$target" ]] && rm "$target"
+        [[ ! -e "$target" ]] && {
             echo "Installing \"$(basename "$source")\" to \"$target\""
             ln -svT "$PWD/$source" "$target"
             continue
