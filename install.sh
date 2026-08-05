@@ -38,6 +38,7 @@ repo_setup() {
 install() {
     local env_name="$1"; shift
     local env="env/$env_name"
+    local last_dir_link=""
 
     cd "$REPO_DIR/$env_name"
 
@@ -45,14 +46,17 @@ install() {
 
     find files -mindepth 1 -print0 | while read -d $'\0' source; do
         [[ "$source" == "files/dot" ]] && continue
+	[[ "$source" == "$last_dir_link/"* ]] && continue
+            # We've already linked the parent dir, so skip this.
 
         target="$TARGET/.${source#files/dot/}"
 
         # Simple case: File is missing, or a link
-	[[ -L "$target" ]] && rm "$target"
+        [[ -L "$target" ]] && rm "$target"
         [[ ! -e "$target" ]] && {
             echo "Installing \"$(basename "$source")\" to \"$target\""
             ln -svT "$PWD/$source" "$target"
+            last_dir_link="$source"
             continue
         }
 
