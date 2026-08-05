@@ -51,6 +51,8 @@ install() {
 
         target="$TARGET/.${source#files/dot/}"
 
+        echo "::\"${source}\" >> \"${target}\""
+
         # Simple case: File is missing, or a link
         [[ -L "$target" ]] && rm "$target"
         [[ ! -e "$target" ]] && {
