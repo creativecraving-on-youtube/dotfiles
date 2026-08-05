@@ -42,8 +42,16 @@ repo_setup() {
     if [[ $# -gt 0 ]] then
         env_name="$1"; shift
     else
-        GIT_DIR="$BARE" git branch | grep 1>&2 "env/"
-        read -p "Select a branch> env/" env_name
+        environments="$(GIT_DIR="$BARE" git branch | grep "env/")"
+        count="$(echo "$environments" | wc -l)"
+        if [[ "$count" -gt 1 ]]; then
+            read -p "Select a branch> env/" env_name
+        elif [[ "$count" -eq 1 ]]; then
+            env_name="$(echo "${environments##*env/}")"
+            echo >&2 "Selecting only detected environment: \"env/$env_name\""
+        else
+            echo >&2 "Aborting. Must have at least one environment branch available."
+        fi
     fi
     local env="env/${env_name}"
 
