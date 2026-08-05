@@ -47,8 +47,6 @@ install() {
         [[ "$source" == "files/dot" ]] && continue
 
         target="$TARGET/.${source#files/dot/}"
-        # Source and target are both directories; link over source contents instead
-        [[ -d "$target" && -d "$source" ]] && continue
 
         # Simple case: File is missing, or a link
 	[[ -L "$target" ]] && rm "$target"
@@ -57,6 +55,9 @@ install() {
             ln -svT "$PWD/$source" "$target"
             continue
         }
+
+        # Source and target are both directories; link over source contents instead
+        [[ -d "$target" && -d "$source" ]] && continue
 
         if [[ -f "$target" && -f "$source" ]]; then
             local target_sum="$(b2sum --binary "$target")"
