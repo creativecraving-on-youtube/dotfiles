@@ -10,7 +10,7 @@ main() {
 
 repo_setup() {
     local REPO=https://github.com/creativecraving-on-youtube/dotfiles
-    local BARE="dotfiles.git"
+    local BARE="$REPO_DIR/dotfiles.git"
     mkdir 1>&2 -p "$REPO_DIR"
     cd "$REPO_DIR"
 
