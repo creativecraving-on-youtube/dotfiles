@@ -8,6 +8,25 @@ main() {
     install "$env_name"
 }
 
+ensure_clean_checkout() {
+    local env_name="$1"; shift
+    git >&2 -C "$REPO_DIR/$env_name" diff-index --quiet --cached HEAD -- || {
+        echo >&2 "Aborting. Index on env/$env_name is not clean"
+        exit 1
+    }
+
+    git >&2 -C "$REPO_DIR/$env_name" diff-files --quiet || {
+        echo >&2 "Aborting. Worktree for env/$env_name is not clean"
+        exit 1
+    }
+
+    local result="$(git -C "$REPO_DIR/$env_name" ls-files --exclude-standard --others)"
+    [[ -z "$result" ]] || {
+        echo >&2 "Aborting. Untracked files detectin in env/$env_name"
+        exit 1
+    }
+}
+
 repo_setup() {
     local REPO=https://github.com/creativecraving-on-youtube/dotfiles
     local BARE="$REPO_DIR/dotfiles.git"
@@ -28,10 +47,14 @@ repo_setup() {
     fi
     local env="env/${env_name}"
 
-    [[ -e "$env_name" ]] || {
+    if [[ -e "$env_name" ]]; then
+        echo >&2 "Updating checkout to latest"
+        ensure_clean_checkout "$env_name"
+        git >&2 -C "$REPO_DIR/$env_name" pull --ff-only origin "env/$env_name"
+    else
         echo >&2 "Checking out \"$env\""
         GIT_DIR="$BARE" git 1>&2 worktree add "./$env_name" "$env"
-    }
+    fi
     echo "$env_name"
 }
 
@@ -46,7 +69,7 @@ install() {
 
     find files -mindepth 1 -print0 | while read -d $'\0' source; do
         [[ "$source" == "files/dot" ]] && continue
-	[[ "$source" == "$last_dir_link/"* ]] && continue
+        [[ "$source" == "$last_dir_link/"* ]] && continue
             # We've already linked the parent dir, so skip this.
 
         target="$TARGET/.${source#files/dot/}"
